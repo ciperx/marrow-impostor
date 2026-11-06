@@ -108,6 +108,32 @@ pd      0.008  0.083      0.000         0/12   OK
 The threshold is fixed on the hold-out split **before** any test is scored, so
 every number is out-of-sample.
 
+## Train and test on your own recordings (offline)
+
+`train_test.py` trains a profile and tests it on **any** recordings in the
+`FORMAT.md` format — no capture software, no network, no manifest. Drop your
+sessions in and it works; the genuine/impostor label is inferred from the path
+(any path segment containing `owner`, `tired` or `self` is the enrolled person;
+`stranger`, `mimic` or `intruder` is an impostor).
+
+```bash
+# enrol on one person (rested + tired days mixed, on purpose), classify a pile
+python3 train_test.py --enrol recordings/owner/ --test recordings/mixed/
+
+# or name the sides explicitly when filenames aren't self-explanatory
+python3 train_test.py --enrol recordings/owner/ --test recordings/mixed/ \
+    --positive alice,alice_tired --negative bob,carol
+
+# also run the swap test (enrol somebody else, present the owner's sessions)
+python3 train_test.py --enrol recordings/owner/ --test recordings/mixed/ \
+    --swap-with recordings/bob/
+```
+
+It prints `FAR` (how often an impostor is let in), `FRR` (how often the owner is
+doubted) and the swap count, with the threshold fixed on a hold-out split of the
+enrolment **before** any test recording is scored — the same out-of-sample
+discipline as `run.py`.
+
 ## Honesty note
 
 This evaluates the **method** on openly synthetic data, not on real users, and
