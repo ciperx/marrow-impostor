@@ -1,0 +1,4 @@
+# Generated fake data — reproduced by `python3 run.py` (fixed seed), no need to commit.
+data/
+__pycache__/
+*.pyc
